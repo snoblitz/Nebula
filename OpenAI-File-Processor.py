@@ -23,14 +23,13 @@ input_file_path = 'input.csv'
 
 
 # Set the file_path variable
-output_file_path = 'output.txt'
+output_file_path = 'output'
 
 
 # Write a prompt to pass to the completions endpoint
-prompt = 'Discover the key trends and common themes (limit your respone to less than 1000 tokens) among the data in this dataset by analyzing the following information:\n'
+prompt = 'Discover the key trends and common themes among the data in this dataset. Return results with a description of the findings, then an indented numnbered list (supporting the findings) complete with the number observed in the trend in parenthesis at the end of each line. Example 1. Most of the people in the dataset are from China (7 of 31). Make sure to keep the list organized in a logical order.\n'
 
 
-import chardet
 
 def get_chunk_size(input_file_path, max_input_tokens):
     """
@@ -101,14 +100,14 @@ def process_csv(input_file_path, chunk_size):
 def analyze_text(json_chunks, prompt):
     """
     This function takes a list of JSON chunks, and submits each chunk to the OpenAI API
-    for analysis. The results are returned as a list of dictionaries.
+    for analysis. The results are returned as a list of strings.
 
     Parameters:
         json_chunks (List[dict]): A list of JSON chunks.
         prompt (str): The prompt to use when calling the OpenAI API.
 
     Returns:
-        List[dict]: A list of dictionaries, one for each chunk.
+        List[str]: A list of strings, one for each chunk.
     """
 
     results = []
@@ -126,34 +125,43 @@ def analyze_text(json_chunks, prompt):
             temperature=0.7,
         )
 
-        # Extract the text from the API response and add it to the dictionary
-        result = {"text": response.choices[0].text}
-
-        # Append the result to the list of results
-        results.append(result)
+        # Extract the text from the API response and append it to the list of results
+        results.append(response.choices[0].text)
 
     return results
 
 
 
-def write_text(results, output_file_path):
+def write_text(text, filename):
     """
-    Writes the results list to a text file at the specified filepath.
-
-    Parameters:
-        results (List[dict]): A list of results in dictionary form.
-        output_file_path (str): The filepath where the text file will be saved.
-
-    Returns:
-        None
+    Writes the given text to a file in HTML format.
+    
+    text: list of str - the text to be written to the file
+    filename: str - the name of the file (without the .html extension)
     """
-    try:
-        with open(output_file_path, 'w', encoding='utf-8') as outfile:
-            for result in results:
-                outfile.write(str(result) + '\n')
-        print(f"Text file written successfully to {output_file_path}")
-    except Exception as e:
-        print(f"Failed to write text file to {output_file_path}: {e}")
+    # create a file with the given filename and '.html' extension
+    file = open(filename + ".html", "w")
+    
+    # write the HTML header
+    file.write("<html>\n<head>\n<title>" + filename + "</title>\n")
+    file.write("<link rel='stylesheet' type='text/css' href='stylesheet.css'>\n")
+    file.write("</head>\n<body>\n")
+    
+    # write the table header
+    file.write("<table>\n")
+    
+    # write the text, replacing newline characters with HTML line breaks
+    for result in text:
+        file.write("<tr><td>" + result.replace("\n", "<br>\n") + "</td></tr>\n")
+    
+    # write the table footer
+    file.write("</table>\n")
+    
+    # write the HTML footer
+    file.write("</body>\n</html>")
+    
+    # close the file
+    file.close()
 
 
 
