@@ -6,7 +6,6 @@ import time
 from tqdm import tqdm
 
 
-
 # Function to read a file containing the user's OpenAI API key
 def open_file(filepath):
 	with open(filepath, 'r', encoding='utf-8') as infile:
@@ -29,7 +28,6 @@ chunk_size = 100
 
 # Write a prompt to pass to the completions endpoint
 prompt = 'Using text mining techniques, discover the key trends and common themes among the data in this dataset. Structure the results with a description of the findings, then in a 10 point (not numbered) bulleted list complete with the number observed in the trend in parenthesis at the end of each line. Example 1. Most of the people in the dataset are from China (7 of 31). Make sure to keep the list organized in a logical order.\n'
-
 
 
 def process_csv(input_file_path, chunk_size):
@@ -110,7 +108,6 @@ def analyze_text(json_chunks, prompt):
     return results
 
 
-
 def write_text(text, filename):
     """
     Writes the given text to a file in HTML format.
@@ -144,7 +141,6 @@ def write_text(text, filename):
     
     # close the file
     file.close()
-
 
     
 if __name__ == '__main__':
