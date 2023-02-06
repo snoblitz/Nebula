@@ -23,6 +23,7 @@ input_file_path = 'input.csv'
 # Set the file_path variable
 output_file_path = 'output'
 
+
 # Set the chunk size
 chunk_size = 100
 
@@ -56,7 +57,7 @@ def process_csv(input_file_path, chunk_size):
     chunks = [data[i:i + chunk_size] for i in range(0, len(data), chunk_size)]
 
     # Convert each chunk into a JSON string
-    json_chunks = [json.dumps(chunk) for chunk in chunks]
+    json_chunks = [json.dumps(chunk) for chunk in chunks] 
 
     return json_chunks
 
